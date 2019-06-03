@@ -42,7 +42,7 @@ A propos, si vous avez fait un fond rigolo ou étonnant pour ce scroll, n'hésit
 
 Call 0! Pict !
 
-```
+```BASIC
 10 REM ON CREE D'ABORD LA TABLE DE PROFONDEUR DES ORDONEES
 20 MODE 2:ORIGIN 0,0:ADR=&4000
 30 INITIAL=256:FINAL=200:C=2*INITIAL
@@ -57,13 +57,13 @@ Call 0! Pict !
 120 MODE 1:ORIGIN 0,0
 130 FOR A=0 TO 2
 140 GRAPHICS PEN (A+1):FOR B=2*(107*A) TO 2*(107*(1+A))
-150 PLOT B,0:DRAN 320,INITIAL*2
+150 PLOT B,0:DRAW 320,INITIAL*2
 160 NEXT
 170 NEXT
 180 SAVE"ECRAN",B,&C000,&3FFF
 ```
 
-```
+```Z80
 ;
 ; The 3D-Scroll !
 ; Logon System pour Amstrad 100%
