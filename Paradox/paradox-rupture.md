@@ -8,11 +8,11 @@ I) LE CRTC. CATHODE RAY TUBE CONTROLLER.
 1 Les registres.
 ----------------
 
-Les registres du CRTC sont au nombre de 18, mais pour les ruptures, seuls 10 registres sont utiles (les registres 0,1,2,5,4,6,7,9,12 et 15). Vous connaissez très bien les registres 1,2,6,7,12 et 13, mais les registres 0,5,4 et 9 méritent quelques explications.
+Les registres du CRTC sont au nombre de 18, mais pour les ruptures, seuls 10 registres sont utiles (les registres 0,1,2,5,4,6,7,9,12 et 15). Vous connaissez très bien les registres 1,2,6,7,12 et 13, mais les registres 0,3,4 et 9 méritent quelques explications.
 
 a) Le registre 4.
 
-Ce registre défini le nombre de ligne de caractère que doit balayer le canon a électrons. Cette valeur est diminuée de 1 par rapport au nombre réel de ligne de caractère a l’écran. Par exemple, quand vous allumez le CPC, le registre 4 est a 58, et le nombre de ligne de caractère a'l’écran est de 37. on a donc : R4=nb de ligne de caractère - 1
+Ce registre défini le nombre de ligne de caractère que doit balayer le canon a électrons. Cette valeur est diminuée de 1 par rapport au nombre réel de ligne de caractère a l’écran. Par exemple, quand vous allumez le CPC, le registre 4 est a 38, et le nombre de ligne de caractère a'l’écran est de 37. on a donc : R4=nb de ligne de caractère - 1
 La valeur du reg 4 peut varier de 0 a 127. À 128, le CRTC boucle, c'est à dire qu'il revient à 0. Par exemple, si vous mettez 128 dans le reg 4, le CRTC conciderera le 128 comme un 0. Si vous mettez 138, il conciderera le 138 comme un 10, etc...
 
 b) Le registre 9.
@@ -20,7 +20,7 @@ b) Le registre 9.
 Ce registre défini le nombre de ligne de pixel qu’il y a dans un caractère. Il est également diminué de 1 par rapport au nombre réel de ligne par caractère. Reg 9= nb ligne par caractère - 1.
 Le valeur normale est ce 7 (donc 8 lignes par caractère (7+1)) cette valeur peut varier de 0 sa 31. A 32, Le CRTC boucle.
 
-c) Le registre 7.
+c) Le registre 3.
 
 Il défini la largeur de la HBL (Horizontal Blanking), c'est la bande noire qu’il y a tout gauche’ de l’écran (on ne peut pas la voir, car elle est trop a gauche! Cette largeur est définie en MOT (1 MOT=2 octets) elle varie de 0 (doc 0 octets) a 15 (donc 30 octets). A 16, ça boucle. La valeur normale est 14. La HBL sert au canon à électrons a se synchroniser. Lorsque la valeur du R3 est trop passe, le canon se synchronise mal et l’écran est décale (ce bug est utilise pour faire des scrolls hards a l'octet, mais le résultat n'est pas très propre, car le scroll vitre un peu, car le canon n'est pas bien synchronise.) Si la valeur est inférieure à 4, le canon est si mal synchronise que l’écran n'est plus stable.
 
@@ -41,7 +41,7 @@ Les registres 0,3,4 et 9 sont des compteurs. Lorsque CRTC affiche un écran, il 
 
 c) L'overflow.
 
-L'overflow est un comportement anormal du CRTC du au fait que l'on envoie une valeur incorrecte dans un registre. L'overflow le plus connu est celui du reg 7, qui permet de coller les écrans dans une rupture. En effet, on met le reg 7 a 255, qui est une valeur overflow, et de ce fait, le CRTC ne produit plus de VBL (qui est la bande noire tout en haut de l’écran, on peut la voir en mettant le border à une autre valeur que 0, et en tournant doucement le bouton qu'il y a derrière le moniteur. Cette bande permet au canon de se resynchroniser en début d'affichage d'un écran.) Mais 1 y à d'autres overflows. Lorsque vous modifier la valeur d'un registre compteur, il peut se produire un overflow. Par exemple, vous mettez le reg 4 a 20, mais au moment su vous mettez cette valeur, la variable du reg 4 en est a 25. Dans ce cas, il se produit un overflow. En effet, vous fixer le maximum du reg 4 a 20, mais le compteur en est a 25, donc, avant d'arriver a 20, il va aller jusqu’à son maximum (qui est 127) vous allez donc avoir un écran qui défile, ou qui scintille.
+L'overflow est un comportement anormal du CRTC du au fait que l'on envoie une valeur incorrecte dans un registre. L'overflow le plus connu est celui du reg 7, qui permet de coller les écrans dans une rupture. En effet, on met le reg 7 a 255, qui est une valeur overflow, et de ce fait, le CRTC ne produit plus de VBL (qui est la bande noire tout en haut de l’écran, on peut la voir en mettant le border à une autre valeur que 0, et en tournant doucement le bouton qu'il y a derrière le moniteur. Cette bande permet au canon de se resynchroniser en début d'affichage d'un écran.) Mais il y a d'autres overflows. Lorsque vous modifier la valeur d'un registre compteur, il peut se produire un overflow. Par exemple, vous mettez le reg 4 a 20, mais au moment su vous mettez cette valeur, la variable du reg 4 en est a 25. Dans ce cas, il se produit un overflow. En effet, vous fixer le maximum du reg 4 a 20, mais le compteur en est a 25, donc, avant d'arriver a 20, il va aller jusqu’à son maximum (qui est 127) vous allez donc avoir un écran qui défile, ou qui scintille.
 
 Ceci est valable pour tous les registres compteurs. Vous avez peut-être constaté un overflow en faisant de la rupture par ligne. Si vous avez en début de rupture ligne a ligne, 4 lignes de caractères identiques, cela est du a un overflow. Vous mettez le reg 9 a 0, alors que le compteur en est par exemple a 2. Dans le cas, le reg 9 va a son maximum, qui est 31 (32 lignes de pixels, ça fait bien 4 lignes de caractères.)
 
@@ -62,7 +62,7 @@ Type B :
 - RVI buggée
 - RVMB buggée
 
-Pour la signification de RVI et RVMB, voir plus loin. Si vous voulez savoir si vous avez un CRTC A ou B, lancer la demo NEW AGE 1. Si le message : PRESS A apparait, vous avez un CRTC type B, si le message PRESS B apparait, vous avez un CRTC type A. C'est logique tout ca !
+Pour la signification de RVI et RVMB, voir plus loin. Si vous voulez savoir si vous avez un CRTC A ou B, lancer la demo NEW AGE 1. Si le message : PRESS A apparait, vous avez un CRTC type B, si le message PRESS B apparait, vous avez un CRTC type A. C'est logique tout ca!
 
 4 Les regles.
 -------------
@@ -140,14 +140,34 @@ Sur le moniteur nous voyons a peut près 32 lignes caractères. Il y à encore 2
 
 Bon, dans notre rupture, on veut qu'il y ai en bas, un scroll hard de 5 lignes de caractères. Ceci nous fait un écran de 5 lignes de haut, tout en bas, mais étant donnée qu'il y a encore 2 lignes caractères en dessous on va ajouter 2 lignes a cet écran, pour avoir ainsi un écran en bas de 7 lignes (5 seront vues, et les 2 dernières seront trop basses.) on veut mettre tout en haut un logo sur un écran de 7 lignes ce haut. Il faut ajouter 5 lignes car il y en a 5 qui ne sont pas visibles au dessus, ceci nous fait donc un total de 7+5=12 lignes caractères en haut.
 
-Hein ? Kwa? Vous ne comprenez rien ? Attendez, je ferais un dessin plus loin pour que vous compreniez mieux. Bon, on a donc un écran en bas de 7 lignes, et un en haut de 12 lignes. On veut mettre en dessous du logo un scroll vertical de il lignes de haut, on a donc un écran de il lignes. Et enfin en dessous du scroll vertical, un écran fixe, pour mettre des vumètres par exemple. Cet écran sera de 9 lignes de haut. Voila, vérifions que le total fait 39 : 12+11+947=39, pas de problème. Les valeurs a envoyer à CRTC sont : 11 (12-19, 10 (11-1), 8 (9-1), et 6 (7-1). Voici un petit dessin qui resume le tout.
+Hein ? Kwa? Vous ne comprenez rien ? Attendez, je ferais un dessin plus loin pour que vous compreniez mieux. Bon, on a donc un écran en bas de 7 lignes, et un en haut de 12 lignes. On veut mettre en dessous du logo un scroll vertical de il lignes de haut, on a donc un écran de il lignes. Et enfin en dessous du scroll vertical, un écran fixe, pour mettre des vumètres par exemple. Cet écran sera de 9 lignes de haut. Voila, vérifions que le total fait 39 : 12+11+947=39, pas de problème. Les valeurs a envoyer à CRTC sont : 11 (12-1), 10 (11-1), 8 (9-1), et 6 (7-1). Voici un petit dessin qui resume le tout.
+
+```
+Début écran CRTC ----------------->
+5 lignes                          |
+Début écran visible --------------| 12 lignes
+Logo (7 lignes)                   |
+----------------------------------<
+
+Scroll vertical (11 lignes)       > 11 lignes
+                                  |
+----------------------------------<
+
+Vu metres (9 lignes)              > 9 lignes
+                                  |
+----------------------+-----------<
+    Scroll hard       | 5 lignes  |
+- fin écran visible --+-----------| 7 lignes
+ fin écran crtc       | 2 lignes  |
+----------------------+-----------+
+```
 
 ![III-1](images/III-1.png)
 
 2 La synchronisation.
 ---------------------
 
-Pour effectuer les changement des reg 4, il faut être bien synchro, pour cela on utilisera les HALTs. Four que tout cela soit clair, on fait un petit dessins, sur lequel on représente l’écran. Chaque case correspond à une ligne de caractère. On place les HALTs (toutes les 52 lignes de pixels, donc, toutes les 6,5 lignes de caractère (92/E=6,5)) On dessine nos écrans en fonction de leur taille, et on obtient ainsi la position des changements d’écran par rapport aux HALTs. Regarder plus loin, il y a ce dessin et aussi des dessins d'autres exemples. (Feuille quadrillée 1)
+Pour effectuer les changement des reg 4, il faut être bien synchro, pour cela on utilisera les HALTs. Four que tout cela soit clair, on fait un petit dessins, sur lequel on représente l’écran. Chaque case correspond à une ligne de caractère. On place les HALTs (toutes les 52 lignes de pixels, donc, toutes les 6,5 lignes de caractère (52/8=6,5)) On dessine nos écrans en fonction de leur taille, et on obtient ainsi la position des changements d’écran par rapport aux HALTs. Regarder plus loin, il y a ce dessin et aussi des dessins d'autres exemples. (Feuille quadrillée 1)
 
 3 Le changement des registres.
 ------------------------------
@@ -189,7 +209,7 @@ IV) La rupture ligne a ligne.
 --------------
 
 Le principe de la rupture ligne a ligne est tres simple. Il suffit de mettre les registres 4 et 9 à 0, et mettre le R7 a 0 ou 255, suivant les cas. On met le R7 à 0, si on commence la rupture ligne a ligne aussitot apres le FRAME. Si apres cette rupture par ligne, on met d'autres ecrans. Il faut mettre le R7 a 255, car on retourne dans le cas de ruptures classiques. Si vous faites une rupture ligne a ligne apres un ecran, il faut mettre le R7 a 255, comme pour une rupture classique. En resumé, je juste apres le FRAME : R7=0. Apres un ecran : R7=25S.
-Pour le CRTC, chaque ligne representera un ecran. En effet, le registre represente la taille en hauteur d'un ecran, celui-ci etant a 0 l'ecran fait pour le CRTC 1 caracters de haut. Le registre 9 est a 0, donc chaque caractere fait 1 ligne de haut, donc chaque ecran fait 1 ligne de haut! Une fois que vous avez modifié les registres 4, 9 et 7, et s'il n'y a pas d'overflow, la rupture ligne a ligre commence, et elle sa fait toute seule, vous n'avez plus besoin de modifier les registres 4,7 et 9, vous n'avez qu'a changer les registres 12 et 13.
+Pour le CRTC, chaque ligne representera un ecran. En effet, le registre represente la taille en hauteur d'un ecran, celui-ci etant a 0 l'ecran fait pour le CRTC 1 caracters de haut. Le registre 9 est a 0, donc chaque caractere fait 1 ligne de haut, donc chaque ecran fait 1 ligne de haut! Une fois que vous avez modifié les registres 4, 9 et 7, et s'il n'y a pas d'overflow, la rupture ligne a ligne commence, et elle sa fait toute seule, vous n'avez plus besoin de modifier les registres 4,7 et 9, vous n'avez qu'a changer les registres 12 et 13.
 
 2 Ah, l'overflow !
 ------------------
@@ -315,7 +335,7 @@ Les inconvénients sont les même que pour une rupture ligne à ligne, c‘est �
 VI) RVMB, RVI
 =============
 
-Bon, la, on entre dans les choses vraiment sérieuses. Tout ce qu'il y avait avant, c'était de la rigolade. RVMB, et surtout RVI sont les techniques les plus récentes. Une seule demo a été réalisée avec la RVI, c'est la fameuse S&amp;KOH. Quand a la RVMB, aucune demo ne l'a encore utilisée, car elle est peut utilisable.
+Bon, la, on entre dans les choses vraiment sérieuses. Tout ce qu'il y avait avant, c'était de la rigolade. RVMB, et surtout RVI sont les techniques les plus récentes. Une seule demo a été réalisée avec la RVI, c'est la fameuse S&KOH. Quand a la RVMB, aucune demo ne l'a encore utilisée, ca elle est peut utilisable.
 Ces 2 techniques ont pour but de faire une rupture ligne a ligne, ou l'on puisse mettre n'importe quelle zone mémoire à l’écran. Avec une rupture ligne a ligne classique, nous sommes limite au #800 premiers octets d'un zone. Avec la RVMB et la RVI, toute la mémoire peut être utilisée.
 
 1 La Rupture Verticale Multi-Bloc (RVMB)
