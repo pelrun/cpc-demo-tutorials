@@ -10,3 +10,5 @@ Google Translate does a surprisingly reasonable job on these (so far), but it do
 - LAV: Actually VBL, for Vertical Blank.
 - IVR: Invisible Vertical Rupture (RVI in the original)
 - "line break line": Actually "line-by-line rupture".
+
+NEW! Longshot has released THE definitive guide to the 6845 CRTC, the Amstrad CPC CRTC Compendium, in both French and English. Get it from http://logonsystem.fr/html/engdownloadlogon.htm
